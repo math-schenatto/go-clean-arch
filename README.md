@@ -6,7 +6,7 @@ Este é um sistema de pedidos desenvolvido em Go utilizando Clean Architecture. 
 
 ## Features
 
-- **WebServer**: Interação através de um arquivo HTML.
+- **WebServer**: Interação através de um arquivo http.
 - **gRPC**: Interação via protocolo gRPC.
 - **GraphQL**: Interação através de uma API GraphQL.
 - **Mensageria**: Utiliza RabbitMQ para comunicação assíncrona.
