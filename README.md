@@ -70,7 +70,7 @@ query {
 
 Execute o evans.
 
-evans -r repl
-package pb
-service OrderService
-call ListOrders
+1. evans -r repl
+2. package pb
+3. service OrderService
+4. call ListOrders
