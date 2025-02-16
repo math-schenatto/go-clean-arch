@@ -31,8 +31,8 @@ func (r *mutationResolver) CreateOrder(ctx context.Context, input *model.OrderIn
 	}, nil
 }
 
-// Orders is the resolver for the orders field.
-func (r *queryResolver) Orders(ctx context.Context, page *int32, limit *int32) ([]*model.Order, error) {
+// ListOrders is the resolver for the ListOrders field.
+func (r *queryResolver) ListOrders(ctx context.Context, page *int32, limit *int32) ([]*model.Order, error) {
 	// Chama o usecase para listar as ordens
 	pageF := int(*page)
 	limitF := int(*limit)
@@ -63,3 +63,34 @@ func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//    it when you're done.
+//  - You have helper methods in this file. Move them out to keep these resolver files clean.
+/*
+	func (r *queryResolver) Orders(ctx context.Context, page *int32, limit *int32) ([]*model.Order, error) {
+	// Chama o usecase para listar as ordens
+	pageF := int(*page)
+	limitF := int(*limit)
+	fmt.Println(pageF, limitF)
+	dto, err := r.ListOrdersUseCase.Execute(pageF, limitF)
+	if err != nil {
+		return nil, err
+	}
+
+	// Converte o output do usecase para o formato de modelo GraphQL
+	var orders []*model.Order
+	for _, order := range dto.Orders {
+		orders = append(orders, &model.Order{
+			ID:         order.ID,
+			Price:      order.Price,
+			Tax:        order.Tax,
+			FinalPrice: order.FinalPrice,
+		})
+	}
+	return orders, nil
+}
+*/

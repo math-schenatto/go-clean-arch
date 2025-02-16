@@ -59,7 +59,7 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Orders func(childComplexity int, page *int32, limit *int32) int
+		ListOrders func(childComplexity int, page *int32, limit *int32) int
 	}
 }
 
@@ -67,7 +67,7 @@ type MutationResolver interface {
 	CreateOrder(ctx context.Context, input *model.OrderInput) (*model.Order, error)
 }
 type QueryResolver interface {
-	Orders(ctx context.Context, page *int32, limit *int32) ([]*model.Order, error)
+	ListOrders(ctx context.Context, page *int32, limit *int32) ([]*model.Order, error)
 }
 
 type executableSchema struct {
@@ -129,17 +129,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Order.Tax(childComplexity), true
 
-	case "Query.orders":
-		if e.complexity.Query.Orders == nil {
+	case "Query.ListOrders":
+		if e.complexity.Query.ListOrders == nil {
 			break
 		}
 
-		args, err := ec.field_Query_orders_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_ListOrders_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.Orders(childComplexity, args["page"].(*int32), args["limit"].(*int32)), true
+		return e.complexity.Query.ListOrders(childComplexity, args["page"].(*int32), args["limit"].(*int32)), true
 
 	}
 	return 0, false
@@ -289,6 +289,47 @@ func (ec *executionContext) field_Mutation_createOrder_argsInput(
 	return zeroVal, nil
 }
 
+func (ec *executionContext) field_Query_ListOrders_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Query_ListOrders_argsPage(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["page"] = arg0
+	arg1, err := ec.field_Query_ListOrders_argsLimit(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["limit"] = arg1
+	return args, nil
+}
+func (ec *executionContext) field_Query_ListOrders_argsPage(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*int32, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("page"))
+	if tmp, ok := rawArgs["page"]; ok {
+		return ec.unmarshalOInt2ᚖint32(ctx, tmp)
+	}
+
+	var zeroVal *int32
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_ListOrders_argsLimit(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*int32, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+	if tmp, ok := rawArgs["limit"]; ok {
+		return ec.unmarshalOInt2ᚖint32(ctx, tmp)
+	}
+
+	var zeroVal *int32
+	return zeroVal, nil
+}
+
 func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
@@ -309,47 +350,6 @@ func (ec *executionContext) field_Query___type_argsName(
 	}
 
 	var zeroVal string
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Query_orders_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
-	var err error
-	args := map[string]any{}
-	arg0, err := ec.field_Query_orders_argsPage(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["page"] = arg0
-	arg1, err := ec.field_Query_orders_argsLimit(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["limit"] = arg1
-	return args, nil
-}
-func (ec *executionContext) field_Query_orders_argsPage(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*int32, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("page"))
-	if tmp, ok := rawArgs["page"]; ok {
-		return ec.unmarshalOInt2ᚖint32(ctx, tmp)
-	}
-
-	var zeroVal *int32
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Query_orders_argsLimit(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*int32, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
-	if tmp, ok := rawArgs["limit"]; ok {
-		return ec.unmarshalOInt2ᚖint32(ctx, tmp)
-	}
-
-	var zeroVal *int32
 	return zeroVal, nil
 }
 
@@ -691,8 +691,8 @@ func (ec *executionContext) fieldContext_Order_FinalPrice(_ context.Context, fie
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_orders(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_orders(ctx, field)
+func (ec *executionContext) _Query_ListOrders(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_ListOrders(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -705,7 +705,7 @@ func (ec *executionContext) _Query_orders(ctx context.Context, field graphql.Col
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Orders(rctx, fc.Args["page"].(*int32), fc.Args["limit"].(*int32))
+		return ec.resolvers.Query().ListOrders(rctx, fc.Args["page"].(*int32), fc.Args["limit"].(*int32))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -719,7 +719,7 @@ func (ec *executionContext) _Query_orders(ctx context.Context, field graphql.Col
 	return ec.marshalOOrder2ᚕᚖgithubᚗcomᚋmathᚑschenattoᚋgoᚑcleanᚑarchᚋinternalᚋinfraᚋgraphᚋmodelᚐOrder(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_orders(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_ListOrders(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -746,7 +746,7 @@ func (ec *executionContext) fieldContext_Query_orders(ctx context.Context, field
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_orders_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_ListOrders_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -3003,7 +3003,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
-		case "orders":
+		case "ListOrders":
 			field := field
 
 			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
@@ -3012,7 +3012,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_orders(ctx, field)
+				res = ec._Query_ListOrders(ctx, field)
 				return res
 			}
 
