@@ -30,47 +30,70 @@ Este é um sistema de pedidos desenvolvido em Go utilizando Clean Architecture. 
 
 ---
 
-## Installation
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/math-schenatto/go-clean-arch
-   cd go-clean-arch
-    ```
-
 ## Execution
 
 Para executar o projeto, siga os comandos abaixo:
 
 1. **Run the application**:
-   Navegue até o diretório do projeto e execute o seguinte comando:
+
+   Para executar esse projeto é necessário apenas executar o comando docker:
    ```bash
-   go run cmd/ordersystem/main.go wire_gen.go
+   docker compose up --build
+   ```
+
+   Ele vai subir todos os containers necessários e a aplicação.
+
+   O banco de dados já será criado com alguns registros na tabela de orders.
+
+    **WebServer**: Porta **8000**
+    **GraphQL**: Porta **8080**
+    **gRPC**: Porta **50051**
+    
 
 
-## Test WebServer
 
-Basta utilizar o arquivo create_order.http dentro da pasta api
+   # Para testar o webserver:
 
-## Test Graphql
+   1. Acessar a pasta api do projeto e abrir o arquivo list_orders.http e executar a request. A request é feita para a porta 8000.
 
-Execute o playground na porta 8080
-```bash
-query {
-    orders(page: 1, limit: 10) {
-        Id
-        Price
-        Tax
-        FinalPrice
-    }
-}
-```
+   ```bash
 
-## Test gRpc
+        ### Listar pedidos (GET /list)
+        GET http://localhost:8000/list?page=1&limit=10 HTTP/1.1
+        Host: localhost:8000
+        Content-Type: application/json
 
-Execute o evans.
+   ```
 
-1. evans -r repl
-2. package pb
-3. service OrderService
-4. call ListOrders
+
+   # Para testar o GraphQl:
+
+   1. Acessar o playground na porta 8080 (http://localhost:8080/)
+    ```bash
+
+        query {
+            ListOrders(page: 1, limit: 10) {
+                Id
+                Price
+                Tax
+                FinalPrice
+            }
+        }
+
+    ```
+
+
+   # Para testar o gRpc:
+
+   1. Necessário acessar o evans:
+
+   ```bash
+        1. evans -r repl
+        2. package pb
+        3. service OrderService
+        4. call ListOrders 
+   ```
+
+   2. Será solicitado page e limit, você pode adicionar 1 e 10 respectivamente.
+
+
